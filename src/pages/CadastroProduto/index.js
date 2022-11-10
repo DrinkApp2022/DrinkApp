@@ -8,8 +8,10 @@ import {
 } from "react-native";
 
 import * as Animatable from 'react-native-animatable'
+import { useNavigation } from "@react-navigation/native";
 
 export default function CadastroProduto() {
+    const navigation = useNavigation();
     const [nome, setNome] = useState('')
     const [descricao, setDescricao] = useState('')
     const [preco, setPreco] = useState('')
@@ -28,6 +30,8 @@ export default function CadastroProduto() {
             descricao,
             preco
         }
+
+        navigation.navigate('ListaProduto')
     }
 
     return (
@@ -59,7 +63,10 @@ export default function CadastroProduto() {
                         placeholder="$$$"
                     />
 
-                    <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                    <TouchableOpacity 
+                        style={styles.button} 
+                        onPress={handleRegister}                        
+                    >
                         <Text style={styles.buttonText}>Salvar</Text>
                     </TouchableOpacity>
                 </View>
