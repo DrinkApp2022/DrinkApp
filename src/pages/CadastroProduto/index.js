@@ -12,24 +12,39 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function CadastroProduto() {
     const navigation = useNavigation();
-    const [nome, setNome] = useState('')
-    const [descricao, setDescricao] = useState('')
-    const [preco, setPreco] = useState('')
+    const [title, setNome] = useState('')
+    const [description, setDescricao] = useState('')
+    const [price, setPreco] = useState('')
 
     function handleRegister(){
-        if(nome == '') {
+        if(title == '') {
             alert("Informe o nome do produto.")
             return;
-        } else if (preco == '') {
+        } else if (price == '') {
             alert("Informe o preço do produto.")
             return;
         }
         
         const data = {
-            nome,
-            descricao,
-            preco
+            title,
+            description,
+            price
         }
+
+        fetch("http://10.0.2.2:3000/api/products", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Success:", data);
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
 
         navigation.navigate('ListaProduto')
     }
@@ -43,7 +58,7 @@ export default function CadastroProduto() {
                     <TextInput
                         style={styles.input}
                         onChangeText={setNome}
-                        value={nome}
+                        value={title}
                         placeholder="Nome do produto"
                     />
 
@@ -51,7 +66,7 @@ export default function CadastroProduto() {
                     <TextInput
                         style={styles.inputDescricao}
                         onChangeText={setDescricao}
-                        value={descricao}
+                        value={description}
                         placeholder="Descrição"
                     />
 
@@ -59,7 +74,7 @@ export default function CadastroProduto() {
                     <TextInput
                         style={styles.input}
                         onChangeText={setPreco}
-                        value={preco}
+                        value={price}
                         placeholder="$$$"
                     />
 

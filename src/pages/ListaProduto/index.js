@@ -11,34 +11,24 @@ import * as Animatable from 'react-native-animatable'
 
 export default function ListaProduto() {
    const[data, setData]=useState([]);
-   const[loading, setLoading]=useState(false) ;
-   const[page, setPage]= useState(1);
+   const[loading, setLoading]=useState(false);
 
    useEffect(()=>{
-
+        fetch('http://10.0.2.2:3000/api/products')
+        .then((response) => response.json())
+        .then((data) => setData(data))
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
    },[]);
-    
-   const dados = [
-        {key:'Energético'},
-        {key:'Gin'},
-        {key:'Licor'},
-        {key:'Rum'},
-        {key:'Saquê'},
-        {key:'Tequila'},
-        {key:'Ping'},
-        {key:'Whisky'},
-        {key:'Corotinho'},
-        {key:'Vodca'},
 
-   ]
     return (
        <View style={styles.container}>
         <FlatList
         style={{margintop:35}}
         contentContainerStyle={{marginHorizontal:20}}
-        data={dados}
-        keyExtractor={item => String(item.key)}
-        renderItem={({item}) => <Text style={styles.listItem}>{item.key} </Text>}
+        data={data}
+        keyExtractor={item => String(item._id)}
+        renderItem={({item}) => <ListItem data={item} />}
         ListFooterComponent={<FooterList load={loading} />}
         />
        </View>
@@ -46,14 +36,21 @@ export default function ListaProduto() {
     );
 }
 
-/**function ListItem({data}){
-
+function ListItem({data}){
 return(
     <View style={styles.listItem}>
-        <Text style={styles.listText}>{data.full_name}</Text>
+        <View style={styles.viewTituloDesc}>
+            <Text style={styles.tituloText}>{data.title}</Text>
+            <Text style={styles.descricaoText}>{data.description}</Text>
+        </View>
+        <View style={styles.viewPreco}>
+            <Text style={styles.precoText}>{data.price}</Text>
+        </View>
+        
     </View>
 )
-}*/
+}
+
 function FooterList({load}){
    if(!load) return null;
    
@@ -61,7 +58,6 @@ function FooterList({load}){
         <View style= {styles.loading}>
             <ActivityIndicator size={25} color="#121212"/>
         </View>
-
     )
 
 }
@@ -83,12 +79,26 @@ const styles = StyleSheet.create({
     },
     listText:{
         fontSize:16,
-        color: '#FFF'
+        color: 'black'
 
     },
     loading:{
        padding:10 
     },
-    
+    tituloText:{
+        fontSize:20,
+        color: 'black',
+        fontWeight: 'bold',
+    },
+    descricaoText:{
+        fontSize:16,
+        color: 'black'
+    },
+    precoText:{
+        fontSize:25,
+        color: 'black',
+        textAlign: 'right',
+        textAlignVertical: 'center'
+    }
  
 })
