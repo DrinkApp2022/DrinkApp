@@ -31,7 +31,7 @@ export default function CadastroProduto() {
             price
         }
 
-        fetch("http://10.0.2.2:3000/api/products", {
+        fetch("http://localhost:3000/api/products", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
