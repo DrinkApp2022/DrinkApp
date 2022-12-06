@@ -12,26 +12,36 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function CadastroProduto() {
     const navigation = useNavigation();
-    const [title, setNome] = useState('')
-    const [description, setDescricao] = useState('')
-    const [price, setPreco] = useState('')
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
 
     function handleRegister(){
-        if(title == '') {
-            alert("Informe o nome do produto.")
+        if(name == '') {
+            alert("Informe o seu nome.")
             return;
-        } else if (price == '') {
-            alert("Informe o preço do produto.")
+        } else if (email == '') {
+            alert("Informe o seu e-mail.")
             return;
+        } else if (password == '') {
+            alert("Informe a senha.")
+            return;
+        } else if (confirmPassword == '') {
+            alert("Informe a confirmação de senha.")
+            return;
+        } else if (password !== confirmPassword) {
+            alert("As senhas devem coincidir")
         }
 
         const data = {
-            title,
-            description,
-            price
+            name,
+            email,
+            password,
+            admin: false
         }
 
-        fetch("http://10.0.2.2:3000/api/products", {
+        fetch("http://localhost:3000/api/products", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -40,43 +50,45 @@ export default function CadastroProduto() {
         })
         .then((response) => response.json())
         .then((data) => {
-            if (data.error) {
-                alert(data.error)
-            } else {
-                navigation.navigate('Lista de Produtos')
-            }
+            alert(data.success)
         })
-
-
+        navigation.navigate('Inicio')
     }
 
     return (
         <View style={styles.container}>
             <Animatable.View animation="fadeInDown" style={styles.container}>
                 <View style={styles.containerForm}>
-
-                    <Text style={styles.text}>Nome do produto:</Text>
+                    <Text style={styles.text}>Nome:</Text>
                     <TextInput
                         style={styles.input}
-                        onChangeText={setNome}
-                        value={title}
+                        onChangeText={setName}
+                        value={name}
+                        autoCapitalize="none"
                     />
-
-                    <Text style={styles.text}>Descrição:</Text>
-                    <TextInput
-                        style={styles.inputDescricao}
-                        onChangeText={setDescricao}
-                        value={description}
-                        multiline
-                    />
-
-                    <Text style={styles.text}>Preço:</Text>
+                    <Text style={styles.text}>E-mail:</Text>
                     <TextInput
                         style={styles.input}
-                        onChangeText={setPreco}
-                        value={price}
+                        onChangeText={setEmail}
+                        value={email}
+                        autoCapitalize="none"
                     />
-
+                    <Text style={styles.text}>Senha:</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setPassword}
+                        value={password}
+                        secureTextEntry={true}
+                        autoCapitalize="none"
+                    />
+                    <Text style={styles.text}>Confirme sua senha:</Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setConfirmPassword}
+                        value={confirmPassword}
+                        secureTextEntry={true}
+                        autoCapitalize="none"
+                    />
                     <TouchableOpacity
                         style={styles.button}
                         onPress={handleRegister}
@@ -92,26 +104,19 @@ export default function CadastroProduto() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex:1,
     },
     containerForm: {
         padding: '5%',
         justifyContent: 'center'
     },
     input: {
+        paddingLeft: '3%',
         borderWidth: 2,
         borderRadius: 10,
         borderBottomWidth: 2,
-        paddingLeft: '3%',
         height: 50,
         fontSize: 16,
-    },
-    inputDescricao: {
-        borderWidth: 2,
-        borderRadius: 10,
-        fontSize: 16,
-        height: 100,
-        paddingLeft: '3%'
     },
     button: {
         backgroundColor: '#38a69d',

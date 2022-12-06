@@ -1,6 +1,6 @@
 import { React, useState } from "react";
-import { 
-    View, 
+import {
+    View,
     Text,
     StyleSheet,
     TextInput,
@@ -12,63 +12,83 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function Inicio() {
     const navigation = useNavigation();
-    const [user, setUser] = useState('')
+    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     function handleSignIn() {
-        if (user === '' || password === '') {
+        if (email === '' || password === '') {
             alert("Preencha todos os campos.")
             return;
         }
 
-        navigation.navigate('ListaProduto')
+        const data = { email, password }
+
+        fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.error) {
+                alert(data.error)
+            } else {
+                setEmail('')
+                setPassword('')
+                navigation.navigate('Lista de Produtos')
+            }
+        })
+
+
     }
-    
+
     return (
         <View style={styles.container}>
             <View style={styles.containerTitle}>
-                <Animatable.Text 
+                <Animatable.Text
                     style={styles.title}
                     animation="zoomIn"
                     delay={600}
                 >Bem-vindo ao DrinkApp!</Animatable.Text>
-                <Animatable.Text 
+                <Animatable.Text
                     style={styles.subTitle}
                     animation="zoomIn"
                     delay={600}
                 >Vai uma bebida ai?</Animatable.Text>
-            </View>            
+            </View>
             <Animatable.View delay={600} animation="fadeInUp" style={styles.containerForm}>
                 <Text style={styles.titleForm}>Faça login para começar.</Text>
 
                 <View style={styles.containerLogin}>
-                    <Text style={styles.text}>Usuário:</Text>
+                    <Text style={styles.text}>E-mail:</Text>
                     <TextInput
-                        placeholder="usuário"
                         style={styles.input}
-                        onChangeText={setUser}
-                        value={user}
+                        onChangeText={setEmail}
+                        value={email}
+                        autoCapitalize='none'
                     />
                     <Text style={styles.text}>Senha:</Text>
                     <TextInput
-                        placeholder="senha"
                         style={styles.input}
                         secureTextEntry={true}
                         onChangeText={setPassword}
                         value={password}
+                        autoCapitalize='none'
                     />
                 </View>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.button}
                     onPress={handleSignIn}
                 >
                     <Text style={styles.buttonText}>Acessar</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.buttonRegister}
-                    onPress={ () => navigation.navigate('CadastroProduto')}    
+                    onPress={ () => navigation.navigate('Cadastro de Usuário')}
                 >
                     <Text style={styles.registerText}>Não possui uma conta?</Text>
                     <Text style={styles.registerText}>Cadastre-se</Text>
@@ -111,11 +131,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         alignSelf: 'center',
         marginTop: 15,
-        marginBottom: 20
     },
     text: {
         fontSize: 20,
-        color: '#a1a1a1'
+        fontWeight: 'bold',
+        marginTop: 20,
+        marginBottom: 3,
     },
     button: {
         backgroundColor: '#38a69d',
@@ -147,9 +168,11 @@ const styles = StyleSheet.create({
         paddingEnd: '5%'
     },
     input: {
-        borderBottomWidth: 1,
-        height: 40,
-        marginBottom: 12,
+        borderWidth: 2,
+        borderRadius: 10,
+        borderBottomWidth: 2,
+        paddingLeft: '3%',
+        height: 50,
         fontSize: 16
     }
 })
